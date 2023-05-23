@@ -1,2 +1,3 @@
 # react-gist-viewer
-Created with CodeSandbox
+
+HitHub gists viewer made with React.
