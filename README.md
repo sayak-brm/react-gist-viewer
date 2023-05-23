@@ -1,6 +1,7 @@
 # react-gist-viewer
 
-HitHub gists viewer made with React.
+
+GitHub gists viewer made with React.
 
 ## To run
 
