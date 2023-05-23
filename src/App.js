@@ -14,14 +14,23 @@ export default () => {
       let url = `https://api.github.com/users/${searchTerm}/gists`;
       try {
         let result = await Promise.all(
-          (await axios.get(url)).data.map(async (r) => ({
+          (
+            await axios.get(url)
+          ).data.map(async (r) => ({
             ...r,
-            forks: (await axios.get(r.forks_url)).data
+            forks: (await axios.get(r.forks_url)).data,
           }))
         );
         setResults(result);
       } catch (e) {
-        setError("Unable to fetch results from GitHub.");
+        setError(
+          <div>
+            Unable to fetch results from GitHub.
+            <br /> Please check the username/your internet connectivity
+            <br />
+            You may also be rate-limited if you spam requests.
+          </div>
+        );
         setResults([]);
       }
       setLoading(false);
@@ -53,21 +62,21 @@ export default () => {
   }, []);
 
   return (
-    <div className="py-10 px-8">
-      <h1 className="font-mono text-6xl font-bold text-center mb-12">
+    <div className='py-10 px-8'>
+      <h1 className='font-mono text-6xl font-bold text-center mb-12'>
         Get GH Gists.
       </h1>
 
       {fileTypes.length > 0 ? (
-        <div className="relative flex w-full flex-wrap items-stretch mb-3">
+        <div className='relative flex w-full flex-wrap items-stretch mb-3'>
           <input
-            type="text"
+            type='text'
             onChange={(e) => setKeyword(e.target.value)}
-            placeholder="GitHub Username"
-            className="px-3 py-3 placeholder-slate-300 text-slate-600 relative bg-white bg-white rounded-full text-sm border border-slate-300 outline-none focus:outline-none focus:ring w-full pr-10"
+            placeholder='GitHub Username'
+            className='px-3 py-3 placeholder-slate-300 text-slate-600 relative bg-white bg-white rounded-full text-sm border border-slate-300 outline-none focus:outline-none focus:ring w-full pr-10'
           />
-          <span className="z-10 h-full leading-snug font-normal absolute text-center text-slate-300 absolute bg-transparent rounded text-base items-center justify-center w-8 right-0 pr-3 py-3">
-            <i className="fas fa-user"></i>
+          <span className='z-10 h-full leading-snug font-normal absolute text-center text-slate-300 absolute bg-transparent rounded text-base items-center justify-center w-8 right-0 pr-3 py-3'>
+            <i className='fas fa-user'></i>
           </span>
         </div>
       ) : (
@@ -75,9 +84,9 @@ export default () => {
       )}
 
       {loading ? (
-        <div className="w-full h-32 mb-4 rounded-lg flex flex-col border border-slate-300 items-center justify-center">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full borderpostcss-import bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 animate-spin">
-            <div className="h-10 w-10 rounded-full bg-white"></div>
+        <div className='w-full h-32 mb-4 rounded-lg flex flex-col border border-slate-300 items-center justify-center'>
+          <div className='flex h-16 w-16 items-center justify-center rounded-full borderpostcss-import bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 animate-spin'>
+            <div className='h-10 w-10 rounded-full bg-white'></div>
           </div>
         </div>
       ) : (
@@ -87,13 +96,31 @@ export default () => {
       {[undefined, null, ""].includes(error) ? (
         <></>
       ) : (
-        <div className="w-full h-32 mb-4 rounded-lg flex flex-col border border-slate-300 items-center justify-center">
-          <div className="m-auto">{error}</div>
+        <div className='w-full h-32 mb-4 rounded-lg flex flex-col border border-slate-300 items-center justify-center'>
+          <div className='m-auto text-center'>{error}</div>
         </div>
       )}
 
       {results.length > 0 ? (
-        <div className="rounded-lg flex flex-col border border-slate-300">
+        <div className='rounded-lg flex flex-col border border-slate-300'>
+          <div className='w-full h-32 md:h-16 grid md:grid-cols-5'>
+            <div className='md:col-span-3 font-black px-4 flex'>
+              <div className='w-full my-auto text-left md:whitespace-nowrap'>
+                Description
+              </div>
+            </div>
+
+            <div className='md:col-span-1 font-black px-4 flex'>
+              <div className='w-full my-auto flex'>Forks</div>
+            </div>
+
+            <div className='md:col-span-1 font-black px-4 flex'>
+              <div className='w-full my-auto text-center whitespace-nowrap'>
+                File Types
+              </div>
+            </div>
+          </div>
+
           {results.map((r, i) => {
             if ([null, ""].includes(r.description)) return <></>;
 
@@ -112,17 +139,15 @@ export default () => {
             return (
               <div
                 key={i}
-                className={`w-full h-32 md:h-16 grid md:grid-cols-5 ${
-                  i > 0 ? "border-t border-slate-300" : ""
-                }`}
+                className='w-full h-32 md:h-16 grid md:grid-cols-5 border-t border-slate-300'
               >
-                <div className="md:col-span-3 font-bold text-gray-600 px-4 flex">
-                  <div className="w-full my-auto text-left md:whitespace-nowrap">
+                <div className='md:col-span-3 font-bold text-gray-600 px-4 flex'>
+                  <div className='w-full my-auto text-left md:whitespace-nowrap'>
                     <a
                       href={r.html_url}
-                      target="_blank"
-                      rel="noreferrer"
-                      aria-label="Github"
+                      target='_blank'
+                      rel='noreferrer'
+                      aria-label='Github'
                     >
                       {r.description.slice(0, 50) +
                         (r.description.length > 50 ? "..." : "")}
@@ -130,30 +155,30 @@ export default () => {
                   </div>
                 </div>
 
-                <div className="md:col-span-1 text-gray-500 px-4 flex">
-                  <div className="w-full my-auto flex">
+                <div className='md:col-span-1 text-gray-500 px-4 flex'>
+                  <div className='w-full my-auto flex'>
                     {r.forks.slice(0, 3).map((f, i) => (
                       <a
                         key={i}
                         href={f.html_url}
-                        target="_blank"
-                        rel="noreferrer"
-                        aria-label="Github"
+                        target='_blank'
+                        rel='noreferrer'
+                        aria-label='Github'
                       >
                         <div
                           style={{
                             backgroundSize: "contain",
-                            backgroundImage: `url("${f.owner.avatar_url}")`
+                            backgroundImage: `url("${f.owner.avatar_url}")`,
                           }}
-                          className="rounded-full w-10 h-10 -mx-1 border border-solid border-white border-2"
+                          className='rounded-full w-10 h-10 -mx-1 border border-solid border-white border-2'
                         />
                       </a>
                     ))}
                   </div>
                 </div>
 
-                <div className="md:col-span-1 text-gray-500 px-4 flex">
-                  <div className="w-full my-auto text-center whitespace-nowrap">
+                <div className='md:col-span-1 text-gray-500 px-4 flex'>
+                  <div className='w-full my-auto text-center whitespace-nowrap'>
                     {files.join(", ").slice(0, 25)}
                   </div>
                 </div>
